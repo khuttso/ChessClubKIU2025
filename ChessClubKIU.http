@@ -1,0 +1,6 @@
+@ChessClubKIU_HostAddress = http://localhost:5253
+
+GET {{ChessClubKIU_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

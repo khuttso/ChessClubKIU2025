@@ -1,0 +1,6 @@
+﻿services:
+  chessclubkiu:
+    image: chessclubkiu
+    build:
+      context: .
+      dockerfile: Dockerfile
