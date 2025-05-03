@@ -1,5 +1,4 @@
-﻿using ChessClubKIU.DTOs.Users;
-using ChessClubKIU.RequestResponse;
+﻿using ChessClubKIU.RequestResponse;
 
 namespace ChessClubKIU.DbManagers.Templates;
 
