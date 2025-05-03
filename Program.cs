@@ -1,7 +1,21 @@
 using Microsoft.AspNetCore.Authentication.Negotiate;
+using ChessClubKIU.DbManagers;
+using ChessClubKIU.DbManagers.MySQL;
+using ChessClubKIU.DbManagers.Templates;
+using ChessClubKIU.Services.Standard;
+using ChessClubKIU.Services.Templates;
+using Microsoft.AspNetCore.Identity;
+using ChessClubKIU.Services.Algorithms;
+using Microsoft.Extensions.Configuration;
+using MySqlConnector;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers();
+builder.Services.AddScoped<MySqlConnection>(_ => new MySqlConnection(builder.Configuration.GetConnectionString("MySqlConnection")));
+builder.Services.AddScoped<IUserManagementDbManager, UserManagementDbManager>();
+builder.Services.AddScoped<IUserManagementService, UserManagementService>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -15,6 +29,8 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = options.DefaultPolicy;
 });
 
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,6 +41,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
 var summaries = new[]
 {
@@ -46,6 +64,7 @@ app.MapGet("/weatherforecast", () =>
     .WithName("GetWeatherForecast")
     .WithOpenApi();
 
+app.MapControllers();
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)

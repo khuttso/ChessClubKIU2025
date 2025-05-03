@@ -4,6 +4,7 @@ using ChessClubKIU.RequestResponse;
 using ChessClubKIU.Services.Algorithms;
 using ChessClubKIU.Services.Templates;
 
+
 namespace ChessClubKIU.Services.Standard;
 
 public class UserManagementService : IUserManagementService
@@ -25,14 +26,28 @@ public class UserManagementService : IUserManagementService
                 Success = false,
                 Message = "Password required"
             };
-        } 
+        }
+
+        if (request.Password != request.ConfirmPassword)
+        {
+            return new ActionResponse()
+            {
+                Success = false,
+                Message = "Passwords do not match",
+                PossibleFix = "Type same password"
+            };
+        }
         
         var (hash, salt) = _passwordHasher.HashPassword(request.Password);
 
         var result = _userManagementDbManager.AddUser(
             request.Username,
             request.Email,
-            REQ
+            request.Gender,
+            hash,
+            salt
         );
+
+        return result;
     }
 }
