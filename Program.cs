@@ -33,7 +33,7 @@ builder.Host.UseSerilog();
 
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<MySqlConnection>(_ => new MySqlConnection(builder.Configuration.GetConnectionString("MySqlConnection")));
+builder.Services.AddScoped<MySqlConnection>(_ => new MySqlConnection(builder.Configuration.GetConnectionString("MySqlConnectionRailway")));
 builder.Services.AddScoped<IUserManagementDbManager, UserManagementDbManager>();
 builder.Services.AddScoped<IUserManagementService, UserManagementService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
