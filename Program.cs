@@ -8,8 +8,29 @@ using Microsoft.AspNetCore.Identity;
 using ChessClubKIU.Services.Algorithms;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
+using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .MinimumLevel.Override("System", LogEventLevel.Warning)
+    
+    .WriteTo.File(
+    path: "Logs/ChessClubLog.txt",
+    rollingInterval: RollingInterval.Day,
+    retainedFileCountLimit: 7,
+    shared: true,
+    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+    )
+    .CreateLogger();
+
+
+builder.Host.UseSerilog();
+
+
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<MySqlConnection>(_ => new MySqlConnection(builder.Configuration.GetConnectionString("MySqlConnection")));

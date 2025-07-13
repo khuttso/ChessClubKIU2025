@@ -4,4 +4,5 @@ public interface IPasswordHasher
 {
     (byte[] hash, byte[] salt) HashPassword(string password);
     bool VerifyHashedPassword(string hashedPassword, byte[] storedHash, byte[] storedSalt);
+    string GenerateRefreshToken();
 }   

@@ -10,10 +10,12 @@ namespace ChessClubKIU.Controllers;
 public class UserManagementController : ControllerBase
 {
     private readonly IUserManagementService _userManagementService;
+    private readonly ILogger<UserManagementController> _logger;
 
-    public UserManagementController(IUserManagementService userManagementService)
+    public UserManagementController(IUserManagementService userManagementService, ILogger<UserManagementController> logger)
     {
         _userManagementService = userManagementService;
+        _logger = logger;
     }
 
     [HttpPost("register-user")]
@@ -21,10 +23,24 @@ public class UserManagementController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            return BadRequest(new ActionResponse() {Success = false, Message = "Invalid request format"});
+            _logger.LogWarning("Invalid request");
+            return BadRequest(new ActionResponse<int>() {Success = false, Message = "Invalid request format"});
         }
+        _logger.LogInformation($"Registering user: {request.Username} : UserManagementController.RegisterUser");
         var response = _userManagementService.RegisterUser(request);
-        
+   
+        return response.Success ? Ok(response) : BadRequest(response);
+    }
+
+    [HttpPost("login-user")]
+    public IActionResult LoginUser([FromBody] LoginUserRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new ActionResponse<int>() {Success = false, Message = "Invalid request format"});
+        }
+
+        var response = _userManagementService.Login(request);
         return response.Success ? Ok(response) : BadRequest(response);
     }
 }

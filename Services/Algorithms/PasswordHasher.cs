@@ -20,4 +20,9 @@ public class PasswordHasher : IPasswordHasher
         var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(hashedPassword));
         return computedHash.SequenceEqual(storedHash);
     }
+
+    public string GenerateRefreshToken()
+    {
+        return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+    }
 }
