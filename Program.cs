@@ -1,3 +1,4 @@
+using ChessClubKIU.DAOs.Users;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using ChessClubKIU.DbManagers;
 using ChessClubKIU.DbManagers.MySQL;
@@ -37,6 +38,8 @@ builder.Services.AddScoped<MySqlConnection>(_ => new MySqlConnection(builder.Con
 builder.Services.AddScoped<IUserManagementDbManager, UserManagementDbManager>();
 builder.Services.AddScoped<IUserManagementService, UserManagementService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IPlayerProfileDbManager, PlayerProfileDbManager>();
+builder.Services.AddScoped<IPlayerProfileService, PlayerProfileService>();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
