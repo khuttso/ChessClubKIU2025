@@ -51,6 +51,10 @@ builder.Services.AddAuthorization(options =>
 });
 
 
+builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<IEventDbManager, EventDbManager>();
+
+
 
 var app = builder.Build();
 
