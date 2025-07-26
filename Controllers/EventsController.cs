@@ -1,11 +1,13 @@
 ﻿using ChessClubKIU.DTOs.Events;
 using ChessClubKIU.RequestResponse;
 using ChessClubKIU.Services.Templates;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace ChessClubKIU.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class EventsController : ControllerBase

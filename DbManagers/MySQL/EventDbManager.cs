@@ -3,6 +3,7 @@ using ChessClubKIU.DAOs.Events;
 using ChessClubKIU.DbManagers.Templates;
 using ChessClubKIU.DTOs.Events;
 using ChessClubKIU.RequestResponse;
+using ChessClubKIU.Services.Templates;
 using Dapper;
 using MySqlConnector;
 
@@ -11,10 +12,12 @@ namespace ChessClubKIU.DbManagers.MySQL;
 public class EventDbManager : IEventDbManager
 {
     private readonly MySqlConnection _connection;
+    private readonly ICurrentUserService _currentUserService;
 
-    public EventDbManager(MySqlConnection connection)
+    public EventDbManager(MySqlConnection connection, ICurrentUserService currentUserService)
     {
         _connection = connection;
+        _currentUserService = currentUserService;
     }
 
     public ActionResponse<int> AddEvent(
@@ -34,7 +37,7 @@ public class EventDbManager : IEventDbManager
                 p_StartDate = startDate,
                 p_EndDate = endDate,
                 p_Location = location,
-                p_CreatedByUserId = createdByUserId
+                p_CreatedByUserId = _currentUserService.GetCurrentUserId()
             });
 
             parameters.Add("@ErrorCode", dbType: DbType.Int32, direction: ParameterDirection.Output);

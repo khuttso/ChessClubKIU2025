@@ -12,10 +12,12 @@ public class UserManagementService : IUserManagementService
 {
     private readonly IUserManagementDbManager _userManagementDbManager;
     private readonly IPasswordHasher _passwordHasher;
-    public UserManagementService(IUserManagementDbManager userManagementDbManager, IPasswordHasher passwordHasher)
+    private readonly IJwtTokenService _jwtTokenService;
+    public UserManagementService(IUserManagementDbManager userManagementDbManager, IPasswordHasher passwordHasher, IJwtTokenService jwtTokenService)
     {
         _userManagementDbManager = userManagementDbManager;
         _passwordHasher = passwordHasher;
+        _jwtTokenService = jwtTokenService;
     }
         
     public ActionResponse<int> RegisterUser(RegisterUserRequest request)
@@ -89,6 +91,7 @@ public class UserManagementService : IUserManagementService
 
             var refreshToken = _passwordHasher.GenerateRefreshToken();
             var refreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+            var token = _jwtTokenService.GenerateToken(user.UserId, user.Username);
             
             var updateResult = _userManagementDbManager.UpdateRefreshToken(user.UserId, refreshToken, refreshTokenExpiry);
 
@@ -105,7 +108,7 @@ public class UserManagementService : IUserManagementService
             {
                 Success = true,
                 Message = "Successful login",
-                Data = new { UserId = user.UserId, RefreshToken = refreshToken, Expiry = refreshTokenExpiry }
+                Data = new {Token = token,  UserID = user.UserId, RefreshToken = refreshToken, Expiry = refreshTokenExpiry }
             };
         }
         catch (Exception e)
