@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using ChessClubKIU.DAOs.Users;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using ChessClubKIU.DbManagers;
@@ -7,7 +9,10 @@ using ChessClubKIU.Services.Standard;
 using ChessClubKIU.Services.Templates;
 using Microsoft.AspNetCore.Identity;
 using ChessClubKIU.Services.Algorithms;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using MySqlConnector;
 using Serilog;
 using Serilog.Events;

@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using ChessClubKIU.DAOs.Users;
 using ChessClubKIU.DbManagers.Templates;
 using ChessClubKIU.RequestResponse;
@@ -51,21 +53,134 @@ public class PlayerProfileDbManager : IPlayerProfileDbManager
 
     public ActionResponse<int> EditPlayerProfile(int profileId, string title, string fideRating)
     {
-        throw new NotImplementedException();
+        var parameters = new DynamicParameters(new {p_ProfileId = profileId, p_Title = title, p_FideRating = fideRating});
+
+        var cmd = new CommandDefinition(
+            "player_editPlayerProfile",
+            parameters,
+            commandType: CommandType.StoredProcedure,
+            commandTimeout: 30
+        );
+
+        try
+        {
+            _connection.Execute(cmd);
+            var result = new ActionResponse<int>()
+            {
+                Success = true,
+                Message = "Profile edited successfully"
+            };
+            return result;
+        }
+        catch (Exception e)
+        {
+            var result = new ActionResponse<int>()
+            {
+                Success = false,
+                Message = "Failed to edit profile"
+            };
+            return result;
+        }
     }
 
     public ActionResponse<int> DeletePlayerProfile(int profileId)
     {
-        throw new NotImplementedException();
+        var parameters = new DynamicParameters(new {p_ProfileId = profileId});
+
+        var cmd = new CommandDefinition(
+            "player_deletePlayerProfile",
+            parameters,
+            commandType: CommandType.StoredProcedure,
+            commandTimeout: 30
+        );
+
+        try
+        {
+            _connection.Execute(cmd);
+            var result = new ActionResponse<int>()
+            {
+                Success = true,
+                Message = "Profile deleted successfully"
+            };
+            return result;
+        }
+        catch (Exception e)
+        {
+            var result = new ActionResponse<int>()
+            {
+                Success = false,
+                Message = "Failed to delete profile"
+            };
+            return result;
+        }
     }
 
     public ActionResponse<PlayerProfile> GetPlayerProfile(int userId)
     {
-        throw new NotImplementedException();
+        var parameters = new DynamicParameters(new {p_UserId = userId});
+
+        var cmd = new CommandDefinition(
+            "player_getPlayerProfile",
+            parameters,
+            commandType: CommandType.StoredProcedure,
+            commandTimeout: 30
+        );
+
+        try
+        {
+            var profile = _connection.QueryFirstOrDefault<PlayerProfile>(cmd);
+
+            var result = new ActionResponse<PlayerProfile>()
+            {
+                Success = true,
+                Message = "Profile retrieved successfully",
+                Data = profile
+            };
+
+            return result;
+        }
+        catch (Exception e)
+        {
+            var result = new ActionResponse<PlayerProfile>()
+            {
+                Success = false,
+                Message = "Failed to retrieve profile",
+                Data = null
+            };
+
+            return result;
+        }
     }
 
     public ActionResponse<IEnumerable<PlayerProfile>> GetAllProfiles()
     {
-        throw new NotImplementedException();
+        var cmd = new CommandDefinition(
+            "player_getAllPlayerProfiles",
+            commandType: CommandType.StoredProcedure,
+            commandTimeout: 30
+        );
+
+        try
+        {
+            var profiles = _connection.Query<PlayerProfile>(cmd);
+
+            var result = new ActionResponse<IEnumerable<PlayerProfile>>()
+            {
+                Success = true,
+                Message = "Profiles retrieved successfully",
+                Data = profiles
+            };
+            return result;
+        }
+        catch (Exception e)
+        {
+            var result = new ActionResponse<IEnumerable<PlayerProfile>>()
+            {
+                Success = false,
+                Message = "Failed to retrieve profiles",
+                Data = null
+            };
+            return result;
+        }
     }
 }

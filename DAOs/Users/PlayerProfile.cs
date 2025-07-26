@@ -1,4 +1,6 @@
-﻿namespace ChessClubKIU.DAOs.Users;
+﻿using System;
+
+namespace ChessClubKIU.DAOs.Users;
 
 public class PlayerProfile
 {

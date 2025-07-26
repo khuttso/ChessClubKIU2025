@@ -1,4 +1,5 @@
-﻿using ChessClubKIU.DAOs.Users;
+﻿using System;
+using ChessClubKIU.DAOs.Users;
 using ChessClubKIU.DbManagers.Templates;
 using ChessClubKIU.DTOs.Users;
 using ChessClubKIU.RequestResponse;
@@ -11,11 +12,13 @@ namespace ChessClubKIU.Services.Standard;
 public class UserManagementService : IUserManagementService
 {
     private readonly IUserManagementDbManager _userManagementDbManager;
+    private readonly IJwtTokenService _jwtTokenService;
     private readonly IPasswordHasher _passwordHasher;
-    public UserManagementService(IUserManagementDbManager userManagementDbManager, IPasswordHasher passwordHasher)
+    public UserManagementService(IUserManagementDbManager userManagementDbManager, IPasswordHasher passwordHasher, IJwtTokenService jwtTokenService)
     {
         _userManagementDbManager = userManagementDbManager;
         _passwordHasher = passwordHasher;
+        _jwtTokenService = jwtTokenService;
     }
         
     public ActionResponse<int> RegisterUser(RegisterUserRequest request)
@@ -86,7 +89,7 @@ public class UserManagementService : IUserManagementService
                     Message = "Invalid Credentials"
                 };
             }
-
+            var token = _jwtTokenService.GenerateJwtToken(user.UserId, user.Username);
             var refreshToken = _passwordHasher.GenerateRefreshToken();
             var refreshTokenExpiry = DateTime.UtcNow.AddDays(7);
             
@@ -105,7 +108,7 @@ public class UserManagementService : IUserManagementService
             {
                 Success = true,
                 Message = "Successful login",
-                Data = new { UserId = user.UserId, RefreshToken = refreshToken, Expiry = refreshTokenExpiry }
+                Data = new { Token = token, UserId = user.UserId, RefreshToken = refreshToken, Expiry = refreshTokenExpiry }
             };
         }
         catch (Exception e)

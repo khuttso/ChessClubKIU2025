@@ -2,6 +2,7 @@
 using ChessClubKIU.DTOs.Users;
 using ChessClubKIU.Services.Templates;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ChessClubKIU.Controllers;
 

@@ -1,8 +1,11 @@
-﻿using ChessClubKIU.DAOs.Users;
+﻿using System;
+using System.Collections.Generic;
+using ChessClubKIU.DAOs.Users;
 using ChessClubKIU.DbManagers.Templates;
 using ChessClubKIU.DTOs.Users;
 using ChessClubKIU.RequestResponse;
 using ChessClubKIU.Services.Templates;
+using Microsoft.Extensions.Logging;
 
 namespace ChessClubKIU.Services.Standard;
 
@@ -20,7 +23,7 @@ public class PlayerProfileService : IPlayerProfileService
     
     public ActionResponse<IEnumerable<PlayerProfile>> GetPlayerProfiles()
     {
-        throw new NotImplementedException();
+        return _playerProfileDbManager.GetAllProfiles();
     }
 
     public ActionResponse<PlayerProfile> GetPlayerProfileById(int id)
@@ -30,28 +33,14 @@ public class PlayerProfileService : IPlayerProfileService
 
     public ActionResponse<int> AddPlayerProfile(AddPlayerProfileRequest playerProfile)
     {
-        try
-        {
-            var result = _playerProfileDbManager.AddPlayerProfile(
-                2,
-                playerProfile.FirstName,
-                playerProfile.LastName,
-                0,
-                1100,
-                ""
-            );
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message);
-            var response = new ActionResponse<int>()
-            {
-                Success = false,
-                Message = ex.Message
-            };
-            return response;
-        }
+        return _playerProfileDbManager.AddPlayerProfile(
+            0,
+            playerProfile.FirstName,
+            playerProfile.LastName,
+            playerProfile.FideRating.Value,
+            playerProfile.KIURating.Value,
+            playerProfile.Title
+        );
     }
 
     public ActionResponse<int> EditPlayerProfile(EditPlayerProfileRequest playerProfile)
